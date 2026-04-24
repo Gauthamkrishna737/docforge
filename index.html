@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DocForge — File Converter & PDF Studio</title>
+  <meta name="description" content="Convert images, Word docs, and PowerPoints to PDF. Merge, split, and edit PDFs. Export to any format — all free, all in your browser." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+
+  <!-- Libraries (CDN) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Google AdSense — replace with your publisher ID -->
+  <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXX" crossorigin="anonymous"></script> -->
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="#" class="logo">Doc<span>Forge</span></a>
+      <div class="nav-links">
+        <a href="#tools">Tools</a>
+        <a href="#how">How it works</a>
+        <a href="https://github.com/YOUR_USERNAME/docforge" target="_blank" class="btn-ghost">GitHub ↗</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="badge">100% Free · No upload needed · Runs in browser</div>
+      <h1>Your files.<br/><span class="accent">Transformed.</span></h1>
+      <p class="hero-sub">Convert images, DOCX, and PPTX to PDF. Merge, split & edit PDFs. Export to any format. Everything happens inside your browser — your files never leave your device.</p>
+      <div class="hero-cta">
+        <a href="#tools" class="btn-primary">Start Converting</a>
+        <a href="#how" class="btn-secondary">See how it works</a>
+      </div>
+    </div>
+    <div class="hero-art">
+      <div class="floating-card c1">IMG → PDF</div>
+      <div class="floating-card c2">DOC → PDF</div>
+      <div class="floating-card c3">MERGE ⊕</div>
+      <div class="floating-card c4">SPLIT ⊗</div>
+      <div class="floating-card c5">PPT → PDF</div>
+    </div>
+  </header>
+
+  <!-- AD SLOT (top banner) -->
+  <div class="ad-banner" id="ad-top">
+    <span class="ad-label">Advertisement</span>
+    <!-- AdSense auto ad or manual slot -->
+    <!-- <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXX" data-ad-slot="XXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script> -->
+    <div class="ad-placeholder">[ Ad Banner — Replace with AdSense code ]</div>
+  </div>
+
+  <!-- TOOLS SECTION -->
+  <section class="tools-section" id="tools">
+    <div class="section-header">
+      <h2>Choose a Tool</h2>
+      <p>Pick what you want to do below. Each tool runs fully client-side.</p>
+    </div>
+
+    <!-- TOOL TABS -->
+    <div class="tool-tabs">
+      <button class="tab active" data-tool="img2pdf">🖼 Image → PDF</button>
+      <button class="tab" data-tool="doc2pdf">📄 DOC → PDF</button>
+      <button class="tab" data-tool="ppt2pdf">📊 PPT → PDF</button>
+      <button class="tab" data-tool="merge">⊕ Merge PDFs</button>
+      <button class="tab" data-tool="split">⊗ Split PDF</button>
+      <button class="tab" data-tool="convert">↔ Convert Format</button>
+    </div>
+
+    <!-- PANELS -->
+    <div class="tool-panel active" id="panel-img2pdf">
+      <div class="panel-inner">
+        <div class="drop-zone" id="dz-img2pdf">
+          <div class="dz-icon">🖼</div>
+          <p class="dz-title">Drop images here</p>
+          <p class="dz-sub">Supports JPG, PNG, WebP, GIF, BMP — multiple files OK</p>
+          <label class="btn-upload">Browse Files<input type="file" accept="image/*" multiple hidden id="in-img2pdf" /></label>
+        </div>
+        <div class="file-list" id="list-img2pdf"></div>
+        <div class="options-box">
+          <h3 class="opts-title">PDF Options</h3>
+          <div class="opts-grid">
+            <div class="opt-group">
+              <label>Page Size</label>
+              <select id="img-pagesize">
+                <option value="A4">A4</option>
+                <option value="Letter">Letter</option>
+                <option value="A3">A3</option>
+                <option value="fit">Fit to Image</option>
+              </select>
+            </div>
+            <div class="opt-group">
+              <label>Orientation</label>
+              <select id="img-orientation">
+                <option value="portrait">Portrait</option>
+                <option value="landscape">Landscape</option>
+                <option value="auto">Auto</option>
+              </select>
+            </div>
+            <div class="opt-group">
+              <label>Margin (px)</label>
+              <input type="number" id="img-margin" value="20" min="0" max="100" />
+            </div>
+            <div class="opt-group">
+              <label>Image Fit</label>
+              <select id="img-fit">
+                <option value="contain">Contain (keep ratio)</option>
+                <option value="stretch">Stretch to page</option>
+                <option value="crop">Crop to fill</option>
+              </select>
+            </div>
+            <div class="opt-group">
+              <label>Image Quality</label>
+              <input type="range" id="img-quality" min="0.5" max="1" step="0.05" value="0.92" />
+              <span id="img-quality-val">0.92</span>
+            </div>
+            <div class="opt-group">
+              <label>Background Color</label>
+              <input type="color" id="img-bg" value="#ffffff" />
+            </div>
+          </div>
+        </div>
+        <div class="preview-box" id="preview-img2pdf"></div>
+        <button class="btn-convert" id="btn-img2pdf" disabled>Convert to PDF</button>
+        <div class="progress-bar"><div class="progress-fill" id="prog-img2pdf"></div></div>
+        <div class="result-box" id="result-img2pdf"></div>
+      </div>
+    </div>
+
+    <div class="tool-panel" id="panel-doc2pdf">
+      <div class="panel-inner">
+        <div class="drop-zone" id="dz-doc2pdf">
+          <div class="dz-icon">📄</div>
+          <p class="dz-title">Drop a Word document here</p>
+          <p class="dz-sub">Supports .docx files</p>
+          <label class="btn-upload">Browse Files<input type="file" accept=".docx,.doc" hidden id="in-doc2pdf" /></label>
+        </div>
+        <div class="file-list" id="list-doc2pdf"></div>
+        <div class="options-box">
+          <h3 class="opts-title">PDF Options</h3>
+          <div class="opts-grid">
+            <div class="opt-group">
+              <label>Page Size</label>
+              <select id="doc-pagesize">
+                <option value="A4">A4</option>
+                <option value="Letter">Letter</option>
+                <option value="A3">A3</option>
+              </select>
+            </div>
+            <div class="opt-group">
+              <label>Margin (pt)</label>
+              <input type="number" id="doc-margin" value="40" min="0" max="120" />
+            </div>
+            <div class="opt-group">
+              <label>Font Size</label>
+              <input type="number" id="doc-fontsize" value="12" min="8" max="24" />
+            </div>
+            <div class="opt-group">
+              <label>Line Spacing</label>
+              <select id="doc-linespace">
+                <option value="1">Single</option>
+                <option value="1.5" selected>1.5x</option>
+                <option value="2">Double</option>
+              </select>
+            </div>
+            <div class="opt-group">
+              <label>Include Headings Style</label>
+              <select id="doc-heading">
+                <option value="bold">Bold</option>
+                <option value="colored">Colored</option>
+                <option value="plain">Plain</option>
+              </select>
+            </div>
+            <div class="opt-group">
+              <label>Embed Images</label>
+              <select id="doc-images">
+                <option value="yes">Yes</option>
+                <option value="no">No (text only)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <button class="btn-convert" id="btn-doc2pdf" disabled>Convert to PDF</button>
+        <div class="progress-bar"><div class="progress-fill" id="prog-doc2pdf"></div></div>
+        <div class="result-box" id="result-doc2pdf"></div>
+        <p class="tool-note">⚠ Complex DOCX formatting (tables, headers/footers, tracked changes) may render with minor differences since this runs 100% in-browser without Word/LibreOffice.</p>
+      </div>
+    </div>
+
+    <div class="tool-panel" id="panel-ppt2pdf">
+      <div class="panel-inner">
+        <div class="drop-zone" id="dz-ppt2pdf">
+          <div class="dz-icon">📊</div>
+          <p class="dz-title">Drop a PowerPoint file here</p>
+          <p class="dz-sub">Supports .pptx files</p>
+          <label class="btn-upload">Browse Files<input type="file" accept=".pptx,.ppt" hidden id="in-ppt2pdf" /></label>
+        </div>
+        <div class="file-list" id="list-ppt2pdf"></div>
+        <div class="options-box">
+          <h3 class="opts-title">PDF Options</h3>
+          <div class="opts-grid">
+            <div class="opt-group">
+              <label>Slide Layout</label>
+              <select id="ppt-layout">
+                <option value="widescreen">Widescreen (16:9)</option>
+                <option value="standard">Standard (4:3)</option>
+              </select>
+            </div>
+            <div class="opt-group">
+              <label>Slides per Page</label>
+              <select id="ppt-perpage">
+                <option value="1">1 slide</option>
+                <option value="2">2 slides</option>
+                <option value="4">4 slides (2×2)</option>
+                <option value="6">6 slides (2×3)</option>
+              </select>
+            </div>
+            <div class="opt-group">
+              <label>Include Slide Numbers</label>
+              <select id="ppt-slidenum">
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </div>
+            <div class="opt-group">
+              <label>Background</label>
+              <select id="ppt-bg">
+                <option value="keep">Keep original</option>
+                <option value="white">White</option>
+                <option value="black">Black</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <button class="btn-convert" id="btn-ppt2pdf" disabled>Convert to PDF</button>
+        <div class="progress-bar"><div class="progress-fill" id="prog-ppt2pdf"></div></div>
+        <div class="result-box" id="result-ppt2pdf"></div>
+        <p class="tool-note">⚠ PPTX rendering is best-effort in-browser. Fonts embedded in the file and complex transitions won't be preserved.</p>
+      </div>
+    </div>
+
+    <div class="tool-panel" id="panel-merge">
+      <div class="panel-inner">
+        <div class="drop-zone" id="dz-merge">
+          <div class="dz-icon">⊕</div>
+          <p class="dz-title">Drop two or more PDFs to merge</p>
+          <p class="dz-sub">Drag to reorder after uploading</p>
+          <label class="btn-upload">Browse Files<input type="file" accept=".pdf" multiple hidden id="in-merge" /></label>
+        </div>
+        <div class="file-list sortable" id="list-merge"></div>
+        <div class="options-box">
+          <h3 class="opts-title">Merge Options</h3>
+          <div class="opts-grid">
+            <div class="opt-group">
+              <label>Add Bookmarks</label>
+              <select id="merge-bookmarks">
+                <option value="yes">Yes — one per source file</option>
+                <option value="no">No</option>
+              </select>
+            </div>
+            <div class="opt-group">
+              <label>Add Page Numbers</label>
+              <select id="merge-pagenums">
+                <option value="no">No</option>
+                <option value="bottom-center">Bottom center</option>
+                <option value="bottom-right">Bottom right</option>
+              </select>
+            </div>
+            <div class="opt-group">
+              <label>Insert blank page between files</label>
+              <select id="merge-blank">
+                <option value="no">No</option>
+                <option value="yes">Yes</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <button class="btn-convert" id="btn-merge" disabled>Merge PDFs</button>
+        <div class="progress-bar"><div class="progress-fill" id="prog-merge"></div></div>
+        <div class="result-box" id="result-merge"></div>
+      </div>
+    </div>
+
+    <div class="tool-panel" id="panel-split">
+      <div class="panel-inner">
+        <div class="drop-zone" id="dz-split">
+          <div class="dz-icon">⊗</div>
+          <p class="dz-title">Drop a PDF to split</p>
+          <p class="dz-sub">Split by page range or into individual pages</p>
+          <label class="btn-upload">Browse Files<input type="file" accept=".pdf" hidden id="in-split" /></label>
+        </div>
+        <div class="file-list" id="list-split"></div>
+        <div class="options-box" id="split-options-box" style="display:none">
+          <h3 class="opts-title">Split Options</h3>
+          <div id="split-page-info" class="split-info"></div>
+          <div class="opts-grid">
+            <div class="opt-group full-width">
+              <label>Split Mode</label>
+              <select id="split-mode">
+                <option value="range">Custom page ranges</option>
+                <option value="every">Every N pages</option>
+                <option value="all">Every page (individual files)</option>
+                <option value="half">Split in half</option>
+              </select>
+            </div>
+            <div class="opt-group full-width" id="split-range-group">
+              <label>Page Ranges (e.g. 1-3, 4-7, 8)</label>
+              <input type="text" id="split-ranges" placeholder="1-3, 4-7, 8" class="text-input" />
+              <p class="hint">Each comma-separated range becomes a separate PDF</p>
+            </div>
+            <div class="opt-group" id="split-every-group" style="display:none">
+              <label>Every N Pages</label>
+              <input type="number" id="split-every-n" value="1" min="1" />
+            </div>
+          </div>
+        </div>
+        <button class="btn-convert" id="btn-split" disabled>Split PDF</button>
+        <div class="progress-bar"><div class="progress-fill" id="prog-split"></div></div>
+        <div class="result-box" id="result-split"></div>
+      </div>
+    </div>
+
+    <div class="tool-panel" id="panel-convert">
+      <div class="panel-inner">
+        <div class="drop-zone" id="dz-convert">
+          <div class="dz-icon">↔</div>
+          <p class="dz-title">Drop a file to convert</p>
+          <p class="dz-sub">PDF, DOCX, PPTX, or Image</p>
+          <label class="btn-upload">Browse Files<input type="file" accept=".pdf,.docx,.pptx,.jpg,.jpeg,.png,.gif,.bmp,.webp" hidden id="in-convert" /></label>
+        </div>
+        <div class="file-list" id="list-convert"></div>
+        <div class="options-box">
+          <h3 class="opts-title">Output Format</h3>
+          <div class="format-grid">
+            <label class="format-card">
+              <input type="radio" name="out-format" value="pdf" checked />
+              <span class="format-icon">📄</span>
+              <span>PDF</span>
+            </label>
+            <label class="format-card">
+              <input type="radio" name="out-format" value="png" />
+              <span class="format-icon">🖼</span>
+              <span>PNG</span>
+            </label>
+            <label class="format-card">
+              <input type="radio" name="out-format" value="jpg" />
+              <span class="format-icon">📷</span>
+              <span>JPG</span>
+            </label>
+            <label class="format-card">
+              <input type="radio" name="out-format" value="txt" />
+              <span class="format-icon">📝</span>
+              <span>TXT</span>
+            </label>
+            <label class="format-card">
+              <input type="radio" name="out-format" value="html" />
+              <span class="format-icon">🌐</span>
+              <span>HTML</span>
+            </label>
+            <label class="format-card">
+              <input type="radio" name="out-format" value="epub" />
+              <span class="format-icon">📚</span>
+              <span>EPUB</span>
+            </label>
+          </div>
+          <div class="opts-grid" style="margin-top:1rem">
+            <div class="opt-group">
+              <label>Image DPI (for PDF→Image)</label>
+              <select id="conv-dpi">
+                <option value="72">72 dpi (screen)</option>
+                <option value="150" selected>150 dpi (standard)</option>
+                <option value="300">300 dpi (print)</option>
+              </select>
+            </div>
+            <div class="opt-group">
+              <label>EPUB Font Size</label>
+              <input type="number" id="conv-epub-font" value="16" min="10" max="32" />
+            </div>
+          </div>
+        </div>
+        <button class="btn-convert" id="btn-convert" disabled>Convert</button>
+        <div class="progress-bar"><div class="progress-fill" id="prog-convert"></div></div>
+        <div class="result-box" id="result-convert"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AD SLOT (mid-page) -->
+  <div class="ad-banner ad-mid" id="ad-mid">
+    <span class="ad-label">Advertisement</span>
+    <!-- <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXX" data-ad-slot="XXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script> -->
+    <div class="ad-placeholder">[ Ad Banner — Replace with AdSense code ]</div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-section" id="how">
+    <div class="section-header">
+      <h2>How It Works</h2>
+      <p>No servers. No accounts. Just your browser doing the work.</p>
+    </div>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-num">01</div>
+        <h3>Pick a tool</h3>
+        <p>Choose from conversion, merge, split, or format export in the tools section above.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-num">02</div>
+        <h3>Upload your files</h3>
+        <p>Drag & drop or browse. Your files are processed entirely in your browser — never uploaded to any server.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-num">03</div>
+        <h3>Customize output</h3>
+        <p>Set page size, margins, orientation, quality, and more before converting.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-num">04</div>
+        <h3>Download instantly</h3>
+        <p>Click convert and get your file instantly — no waiting, no email, no watermarks.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="logo">Doc<span>Forge</span></span>
+        <p>A free, open-source, browser-based file converter. Built with ❤ and hosted on GitHub Pages.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Tools</h4>
+        <a href="#tools">Image to PDF</a>
+        <a href="#tools">DOC to PDF</a>
+        <a href="#tools">PPT to PDF</a>
+        <a href="#tools">Merge PDFs</a>
+        <a href="#tools">Split PDF</a>
+        <a href="#tools">Convert Format</a>
+      </div>
+      <div class="footer-links">
+        <h4>Project</h4>
+        <a href="https://github.com/YOUR_USERNAME/docforge" target="_blank">GitHub</a>
+        <a href="https://github.com/YOUR_USERNAME/docforge/issues" target="_blank">Report a Bug</a>
+        <a href="https://github.com/YOUR_USERNAME/docforge/blob/main/LICENSE" target="_blank">License</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 DocForge. All processing happens in your browser. No data is collected or stored.</p>
+    </div>
+  </footer>
+
+  <!-- AD SLOT (footer/sticky) -->
+  <!-- Uncomment for sticky bottom ad -->
+  <!--
+  <div class="ad-sticky" id="ad-sticky">
+    <button class="ad-close" onclick="this.parentElement.style.display='none'">✕</button>
+    <span class="ad-label">Advertisement</span>
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXX" data-ad-slot="XXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+  -->
+
+  <script src="js/utils.js"></script>
+  <script src="js/img2pdf.js"></script>
+  <script src="js/doc2pdf.js"></script>
+  <script src="js/ppt2pdf.js"></script>
+  <script src="js/merge.js"></script>
+  <script src="js/split.js"></script>
+  <script src="js/convert.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
